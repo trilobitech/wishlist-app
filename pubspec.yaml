@@ -32,6 +32,7 @@ dependencies:
   flutter:
     sdk: flutter
   logger_plus: ^0.1.0
+  simple_nav: ^0.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -43,6 +44,10 @@ dependency_overrides:
     git:
       url: https://github.com/pedrox-hs/flutter_packages
       path: logger_plus
+  simple_nav:
+    git:
+      url: https://github.com/pedrox-hs/flutter_packages
+      path: simple_nav
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/style/theme.dart';
-import 'features/home/home_page.dart';
+import 'router.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
 
       // define routes
-      home: const HomePage(title: 'Wishlist'),
+      initialRoute: '/',
+      onGenerateRoute: routerDelegate(),
     );
   }
 }
