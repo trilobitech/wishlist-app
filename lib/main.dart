@@ -13,7 +13,7 @@ void main() async {
 
       unawaited(loadModules());
 
-      runApp(const MyApp());
+      runApp(const App());
     },
     Log.f,
   );
