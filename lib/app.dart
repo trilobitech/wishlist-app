@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'common/style/theme.dart';
-import 'router.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({
+    super.key,
+    required this.routeDelegate,
+  });
 
-  // This widget is the root of your application.
+  final RouteFactory Function() routeDelegate;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,7 +22,7 @@ class App extends StatelessWidget {
 
       // define routes
       initialRoute: '/',
-      onGenerateRoute: routerDelegate(),
+      onGenerateRoute: routeDelegate(),
     );
   }
 }
