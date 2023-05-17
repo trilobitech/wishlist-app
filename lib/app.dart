@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'common/core/route_observer.dart';
 import 'common/style/theme.dart';
 
 class App extends StatelessWidget {
-  App({
+  const App({
     super.key,
     required this.routeDelegate,
   });
 
   final RouteFactory Function() routeDelegate;
-
-  late final navigatorObservers = <NavigatorObserver>[
-    GetItRouteObserver(),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +23,6 @@ class App extends StatelessWidget {
       // define routes
       initialRoute: '/',
       onGenerateRoute: routeDelegate(),
-      navigatorObservers: navigatorObservers,
     );
   }
 }

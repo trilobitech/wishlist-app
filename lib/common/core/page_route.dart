@@ -1,54 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:logger_plus/logger_plus.dart';
+import 'package:meta/meta.dart';
 import 'package:simple_nav/simple_nav.dart';
-
-import 'gambi/scoped_page_route.dart';
 
 typedef PageBuilder<W extends Widget> = W Function(
   BuildContext context,
   RouteExtras extras,
 );
 
-typedef RouteSettingsBuilder = RouteSettings Function(
-  RouteSettings oldSettings,
-);
-
-// RouteBuilder routePageBuilder({
-//   required RouteBuilder builder,
-//   Function(GetIt)? onInit,
-// }) =>
-//     (settings, extras) {
-//       return PageRouteWrapper(
-//         child: builder(settings, extras),
-//         init: onInit,
-//       );
-//     };
-
-RouteBuilder defaultRoutePageBuilder<W extends Widget>({
+RouteBuilder scopedRoutePageBuilder<W extends Widget>({
   required PageBuilder<W> builder,
-  RouteSettingsBuilder? settingsBuilder,
   Function(GetIt)? onInit,
   bool maintainState = true,
   bool fullscreenDialog = false,
 }) =>
-    (settings, extras) {
-      return DefaultPageRoute(
-        settings: settingsBuilder?.call(settings) ?? settings.copyWith(W),
-        builder: (ctx) => builder(ctx, extras),
-        onInit: onInit,
-        maintainState: maintainState,
-        fullscreenDialog: fullscreenDialog,
-      );
-    };
+    (settings, extras) => ScopedPageRoute(
+          settings: settings.copyWith(name: W.toString()),
+          builder: (ctx) => builder(ctx, extras),
+          onInit: onInit,
+          maintainState: maintainState,
+          fullscreenDialog: fullscreenDialog,
+        );
 
-RouteBuilder genericRoutePageBuilder<R>() {
-  // refrectClass(R);
-  throw UnimplementedError();
-}
-
-class DefaultPageRoute extends MaterialPageRoute
-    with ScopedRouteLifecycleMixin {
-  DefaultPageRoute({
+class ScopedPageRoute extends MaterialPageRoute with ScopedRouteLifecycleMixin {
+  ScopedPageRoute({
     required super.builder,
     super.settings,
     super.maintainState = true,
@@ -59,13 +37,43 @@ class DefaultPageRoute extends MaterialPageRoute
   }
 }
 
-extension RouteSettingsExt on RouteSettings {
-  RouteSettings copyWith(
-    Type name, {
-    Object? arguments,
-  }) =>
-      RouteSettings(
-        name: name.toString(),
-        arguments: arguments ?? this.arguments,
-      );
+mixin ScopedRouteLifecycleMixin on Route {
+  String get scopeName => identityHashCode(this).toString();
+
+  @internal
+  Function(GetIt container)? init;
+
+  @override
+  void install() {
+    Log.d('install');
+    GetIt.instance.pushNewScope(scopeName: scopeName, init: init);
+    super.install();
+  }
+
+  @override
+  void dispose() {
+    Log.d('dispose');
+    unawaited(
+      GetIt.instance.dropScope(scopeName),
+    );
+    super.dispose();
+  }
+
+  @override
+  TickerFuture didPush() {
+    Log.d('didPush');
+    return super.didPush();
+  }
+
+  @override
+  bool didPop(result) {
+    Log.d('didPop {result: $result}');
+    return super.didPop(result);
+  }
+
+  @override
+  void didReplace(Route? oldRoute) {
+    Log.d('didReplace {oldRoute: $oldRoute}');
+    super.didReplace(oldRoute);
+  }
 }
