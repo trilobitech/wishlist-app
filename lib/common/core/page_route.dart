@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger_plus/logger_plus.dart';
-import 'package:meta/meta.dart';
 import 'package:simple_nav/simple_nav.dart';
 
 typedef PageBuilder<W extends Widget> = W Function(
   BuildContext context,
   RouteExtras extras,
 );
+
+typedef OnInit = Function(GetIt container);
 
 RouteBuilder scopedRoutePageBuilder<W extends Widget>({
   required PageBuilder<W> builder,
@@ -18,62 +19,56 @@ RouteBuilder scopedRoutePageBuilder<W extends Widget>({
   bool fullscreenDialog = false,
 }) =>
     (settings, extras) => ScopedPageRoute(
-          settings: settings.copyWith(name: W.toString()),
+          settings: RouteSettings(name: W.toString(), arguments: extras),
           builder: (ctx) => builder(ctx, extras),
           onInit: onInit,
           maintainState: maintainState,
           fullscreenDialog: fullscreenDialog,
         );
 
-class ScopedPageRoute extends MaterialPageRoute with ScopedRouteLifecycleMixin {
+class ScopedPageRoute extends MaterialPageRoute {
   ScopedPageRoute({
     required super.builder,
     super.settings,
     super.maintainState = true,
     super.fullscreenDialog = false,
-    Function(GetIt container)? onInit,
-  }) {
-    init = onInit;
-  }
-}
+    OnInit? onInit,
+  }) : _init = onInit;
 
-mixin ScopedRouteLifecycleMixin on Route {
-  String get scopeName => identityHashCode(this).toString();
-
-  @internal
-  Function(GetIt container)? init;
+  final OnInit? _init;
+  late final String _scopeName = identityHashCode(this).toString();
 
   @override
   void install() {
-    Log.d('install');
-    GetIt.instance.pushNewScope(scopeName: scopeName, init: init);
+    Log.d('${settings.name}: install');
+    GetIt.instance.pushNewScope(scopeName: _scopeName, init: _init);
     super.install();
   }
 
   @override
   void dispose() {
-    Log.d('dispose');
+    Log.d('${settings.name}: dispose');
     unawaited(
-      GetIt.instance.dropScope(scopeName),
+      GetIt.instance.dropScope(_scopeName),
     );
     super.dispose();
   }
 
   @override
   TickerFuture didPush() {
-    Log.d('didPush');
+    Log.d('${settings.name}: didPush');
     return super.didPush();
   }
 
   @override
   bool didPop(result) {
-    Log.d('didPop {result: $result}');
+    Log.d('${settings.name}: didPop {result: $result}');
     return super.didPop(result);
   }
 
   @override
   void didReplace(Route? oldRoute) {
-    Log.d('didReplace {oldRoute: $oldRoute}');
+    Log.d('${settings.name}: didReplace {oldRoute: $oldRoute}');
     super.didReplace(oldRoute);
   }
 }

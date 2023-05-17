@@ -3,14 +3,13 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger_plus/logger_plus.dart';
+import 'package:logging/logging.dart';
 
 import 'app.dart';
 import 'module.dart';
 
 void main() async {
-  if (kDebugMode) {
-    Log.listen(DebugLogRecorder());
-  }
+  initLogger();
 
   await runZonedGuarded(
     () async {
@@ -27,4 +26,11 @@ void main() async {
     },
     Log.wtf,
   );
+}
+
+void initLogger() {
+  if (kDebugMode) {
+    Logger.root.level = Level.ALL;
+    Log.listen(DebugLogRecorder());
+  }
 }
