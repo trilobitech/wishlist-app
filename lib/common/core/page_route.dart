@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:logger_plus/logger_plus.dart';
 import 'package:simple_nav/simple_nav.dart';
+
+import 'di.dart';
 
 typedef PageBuilder<W extends Widget> = W Function(
   BuildContext context,
@@ -13,13 +14,15 @@ typedef PageBuilder<W extends Widget> = W Function(
 typedef OnInit = Function(GetIt container);
 
 RouteBuilder scopedRoutePageBuilder<W extends Widget>({
+  String? name,
   required PageBuilder<W> builder,
-  Function(GetIt)? onInit,
+  OnInit? onInit,
   bool maintainState = true,
   bool fullscreenDialog = false,
 }) =>
     (settings, extras) => ScopedPageRoute(
-          settings: RouteSettings(name: W.toString(), arguments: extras),
+          name: name ?? W.toString(),
+          settings: settings,
           builder: (ctx) => builder(ctx, extras),
           onInit: onInit,
           maintainState: maintainState,
@@ -28,6 +31,7 @@ RouteBuilder scopedRoutePageBuilder<W extends Widget>({
 
 class ScopedPageRoute extends MaterialPageRoute {
   ScopedPageRoute({
+    required this.name,
     required super.builder,
     super.settings,
     super.maintainState = true,
@@ -35,40 +39,39 @@ class ScopedPageRoute extends MaterialPageRoute {
     OnInit? onInit,
   }) : _init = onInit;
 
+  final String name;
   final OnInit? _init;
   late final String _scopeName = identityHashCode(this).toString();
 
   @override
   void install() {
-    Log.d('${settings.name}: install');
-    GetIt.instance.pushNewScope(scopeName: _scopeName, init: _init);
+    Log.d('$name: install');
+    getIt.pushNewScope(scopeName: _scopeName, init: _init);
     super.install();
   }
 
   @override
   void dispose() {
-    Log.d('${settings.name}: dispose');
-    unawaited(
-      GetIt.instance.dropScope(_scopeName),
-    );
+    Log.d('$name: dispose');
+    unawaited(getIt.dropScope(_scopeName));
     super.dispose();
   }
 
   @override
   TickerFuture didPush() {
-    Log.d('${settings.name}: didPush');
+    Log.d('$name: didPush');
     return super.didPush();
   }
 
   @override
   bool didPop(result) {
-    Log.d('${settings.name}: didPop {result: $result}');
+    Log.d('$name: didPop {result: $result}');
     return super.didPop(result);
   }
 
   @override
   void didReplace(Route? oldRoute) {
-    Log.d('${settings.name}: didReplace {oldRoute: $oldRoute}');
+    Log.d('$name: didReplace {oldRoute: $oldRoute}');
     super.didReplace(oldRoute);
   }
 }
