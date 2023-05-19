@@ -1,9 +1,11 @@
 import 'common/core/route_module.dart';
+import 'features/entrypoint/entrypoint_module.dart';
 import 'features/home/home_module.dart';
 
 class MainRouteModule extends RouteModule {
   /// The list of child modules.
   late final List<RouteModule> children = [
+    EntrypointModule(),
     HomeRouteModule(),
   ];
 
