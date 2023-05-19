@@ -38,15 +38,20 @@ dependencies:
   cupertino_icons: ^1.0.2
   get_it: ^7.6.0
   meta: ^1.8.0
-  simple_nav:
-    git:
-      url: https://github.com/pedrox-hs/flutter_packages
-      path: simple_nav
+  logging: ^1.1.1
+  provider: ^6.0.5
   logger_plus:
     git:
       url: https://github.com/pedrox-hs/flutter_packages
       path: logger_plus
-  logging: ^1.1.1
+  simple_nav:
+    git:
+      url: https://github.com/pedrox-hs/flutter_packages
+      path: simple_nav
+  state_action_bloc:
+    git:
+      url: https://github.com/pedrox-hs/flutter_packages
+      path: state_action_bloc
 
 dev_dependencies:
   flutter_test:
