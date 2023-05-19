@@ -328,7 +328,7 @@ packages:
     description:
       path: logger_plus
       ref: HEAD
-      resolved-ref: "40b218ff85ceb090457328047282fdb6c5cc07a2"
+      resolved-ref: "9246c340daccbeb04fddd584acdc9f7a85489894"
       url: "https://github.com/pedrox-hs/flutter_packages"
     source: git
     version: "1.0.0"
@@ -465,7 +465,7 @@ packages:
     description:
       path: simple_nav
       ref: HEAD
-      resolved-ref: "40b218ff85ceb090457328047282fdb6c5cc07a2"
+      resolved-ref: "9246c340daccbeb04fddd584acdc9f7a85489894"
       url: "https://github.com/pedrox-hs/flutter_packages"
     source: git
     version: "0.1.0"
@@ -495,7 +495,7 @@ packages:
     description:
       path: state_action_bloc
       ref: HEAD
-      resolved-ref: "40b218ff85ceb090457328047282fdb6c5cc07a2"
+      resolved-ref: "9246c340daccbeb04fddd584acdc9f7a85489894"
       url: "https://github.com/pedrox-hs/flutter_packages"
     source: git
     version: "0.1.0"
